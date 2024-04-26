@@ -29,6 +29,11 @@ async function run() {
     await client.connect();
     const spotsCollection = client.db("spotsDB").collection("spots");
 
+    app.get("/spots", async (req, res) => {
+      const result = await spotsCollection.find().toArray();
+      res.send(result);
+    });
+
     app.post("/spots/new", async (req, res) => {
       const newSpot = req.body;
       const result = await spotsCollection.insertOne(newSpot);
