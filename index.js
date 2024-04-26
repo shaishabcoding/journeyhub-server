@@ -53,6 +53,21 @@ async function run() {
       res.send(result);
     });
 
+    app.put("/spot/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updatedSpot = {
+        $set: req.body,
+      };
+      const result = await spotsCollection.updateOne(
+        query,
+        updatedSpot,
+        options
+      );
+      res.send(result);
+    });
+
     app.delete("/spot/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
