@@ -39,6 +39,13 @@ async function run() {
       const result = await spotsCollection.findOne(query);
       res.send(result);
     });
+    app.get("/spots/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email };
+      const cursor = spotsCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
 
     app.post("/spots/new", async (req, res) => {
       const newSpot = req.body;
