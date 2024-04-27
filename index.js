@@ -30,6 +30,7 @@ async function run() {
     const spotsDB = client.db("spotsDB");
     const spotsCollection = spotsDB.collection("spots");
     const slidesCollection = spotsDB.collection("slides");
+    const countriesCollection = spotsDB.collection("countries");
 
     app.get("/spots", async (req, res) => {
       const result = await spotsCollection.find().toArray();
@@ -38,6 +39,11 @@ async function run() {
 
     app.get("/slides", async (req, res) => {
       const result = await slidesCollection.find().toArray();
+      res.send(result);
+    });
+
+    app.get("/countries", async (req, res) => {
+      const result = await countriesCollection.find().toArray();
       res.send(result);
     });
 
@@ -65,6 +71,12 @@ async function run() {
     app.post("/slides/new", async (req, res) => {
       const newSpot = req.body;
       const result = await slidesCollection.insertOne(newSpot);
+      res.send(result);
+    });
+
+    app.post("/countries/new", async (req, res) => {
+      const newSpot = req.body;
+      const result = await countriesCollection.insertOne(newSpot);
       res.send(result);
     });
 
