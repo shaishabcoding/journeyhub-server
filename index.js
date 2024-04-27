@@ -33,7 +33,15 @@ async function run() {
     const countriesCollection = spotsDB.collection("countries");
 
     app.get("/spots", async (req, res) => {
-      const result = await spotsCollection.find().toArray();
+      const sort = req.query.sort;
+      const sortOptions =
+        sort === "asc" ? { cost: 1 } : sort === "desc" ? { cost: -1 } : null;
+      let result;
+      if (sortOptions) {
+        result = await spotsCollection.find().sort(sortOptions).toArray();
+      } else {
+        result = await spotsCollection.find().toArray();
+      }
       res.send(result);
     });
 
@@ -78,6 +86,7 @@ async function run() {
 
     app.post("/slides/new", async (req, res) => {
       const newSpot = req.body;
+      newSpot.cost = parseInt(newSpot.cost);
       const result = await slidesCollection.insertOne(newSpot);
       res.send(result);
     });
@@ -89,11 +98,13 @@ async function run() {
     });
 
     app.put("/spot/:id", async (req, res) => {
+      const spot = req.body;
+      spot.cost = parseInt(spot.cost);
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const options = { upsert: true };
       const updatedSpot = {
-        $set: req.body,
+        $set: spot,
       };
       const result = await spotsCollection.updateOne(
         query,
