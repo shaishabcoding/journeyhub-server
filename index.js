@@ -62,6 +62,14 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/spots/country/:country", async (req, res) => {
+      const country = req.params.country;
+      const query = { country };
+      const cursor = spotsCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
     app.post("/spots/new", async (req, res) => {
       const newSpot = req.body;
       const result = await spotsCollection.insertOne(newSpot);
