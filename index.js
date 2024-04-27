@@ -27,18 +27,27 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     await client.connect();
-    const spotsCollection = client.db("spotsDB").collection("spots");
+    const spotsDB = client.db("spotsDB");
+    const spotsCollection = spotsDB.collection("spots");
+    const slidesCollection = spotsDB.collection("slides");
 
     app.get("/spots", async (req, res) => {
       const result = await spotsCollection.find().toArray();
       res.send(result);
     });
+
+    app.get("/slides", async (req, res) => {
+      const result = await slidesCollection.find().toArray();
+      res.send(result);
+    });
+
     app.get("/spot/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await spotsCollection.findOne(query);
       res.send(result);
     });
+
     app.get("/spots/:email", async (req, res) => {
       const email = req.params.email;
       const query = { email };
@@ -50,6 +59,12 @@ async function run() {
     app.post("/spots/new", async (req, res) => {
       const newSpot = req.body;
       const result = await spotsCollection.insertOne(newSpot);
+      res.send(result);
+    });
+
+    app.post("/slides/new", async (req, res) => {
+      const newSpot = req.body;
+      const result = await slidesCollection.insertOne(newSpot);
       res.send(result);
     });
 
